@@ -35,7 +35,7 @@ public class Pokero {
     public static long getPokeroCount() {
         return pokeroCount;
     }
-    public long getPokeroId() {
+    public long getPOKERO_ID() {
         return this.POKERO_ID;
     }
     public String getPokeroName() {
