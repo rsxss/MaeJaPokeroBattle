@@ -9,7 +9,7 @@ package org.maejaporja.model;
  *
  * @author NATWORPONGLOYSWAI
  */
-public class Pokero {
+public class Pokero implements Comparable<Pokero>{
     public static long pokeroCount;
     private long POKERO_ID;
     private String pokeroName;
@@ -56,5 +56,11 @@ public class Pokero {
     }
     public void setOwnBy(PokeroTrainer ownBy) {
         this.ownBy = ownBy;
+    }
+
+    @Override
+    public int compareTo(Pokero pokero) {
+        System.out.println(this.pokeroName.compareTo(pokero.getPokeroName()));
+        return this.pokeroName.compareTo(pokero.getPokeroName());
     }
 }
