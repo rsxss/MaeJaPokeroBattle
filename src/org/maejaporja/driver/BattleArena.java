@@ -30,7 +30,6 @@ public class BattleArena {
     public static void main(String[] args) {
         
         prepareBattleArena();
-        InsertionSort<Pokero> is = new InsertionSort();
         /////////////////////////////////////////////////////////////////////////
         PokeroTrainer[] pokeroTrainers = BattleArena.STORAGE.getPokeroTrainers();
         Pokero[] pokeros = BattleArena.STORAGE.getPokeros();

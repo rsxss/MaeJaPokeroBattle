@@ -60,7 +60,6 @@ public class Pokero implements Comparable<Pokero>{
 
     @Override
     public int compareTo(Pokero pokero) {
-        System.out.println(this.pokeroName.compareTo(pokero.getPokeroName()));
         return this.pokeroName.compareTo(pokero.getPokeroName());
     }
 }
