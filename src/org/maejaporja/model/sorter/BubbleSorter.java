@@ -8,10 +8,7 @@ package org.maejaporja.model.sorter;
 /**
  *
  * @author NATWORPONGLOYSWAI
- * @param <T>
  */
-public interface Sorter<T> {
-    abstract public T[] sort(Comparable<T>[] arr);
-    abstract public boolean compareInOrder(Comparable<T> obja, T objb);
-    abstract public Comparable<T>[] newArrayFrom(Comparable<T>[] arr);
+public class BubbleSorter {
+    
 }
