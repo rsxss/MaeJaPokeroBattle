@@ -13,5 +13,6 @@ package org.maejaporja.model.sorter;
 public interface Sorter<T> {
     abstract public T[] sort(Comparable<T>[] arr);
     abstract public boolean compareInOrder(Comparable<T> obja, T objb);
+    abstract public boolean verifyOrder(String order);
     abstract public Comparable<T>[] newArrayFrom(Comparable<T>[] arr);
 }
