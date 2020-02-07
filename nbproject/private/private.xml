@@ -3,7 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/NATWORPONGLOYSWAI/Documents/NetBeansProjects/MaeJaPokeroBattle/src/org/maejaporja/utils/ApplicationConfig.java</file>
+            <file>file:/C:/Users/NATWORPONGLOYSWAI/Documents/NetBeansProjects/MaeJaPokeroBattle/src/org/maejaporja/model/Pokero.java</file>
+            <file>file:/C:/Users/NATWORPONGLOYSWAI/Documents/NetBeansProjects/MaeJaPokeroBattle/src/org/maejaporja/model/sorter/Sorter.java</file>
             <file>file:/C:/Users/NATWORPONGLOYSWAI/Documents/NetBeansProjects/MaeJaPokeroBattle/src/org/maejaporja/driver/BattleArena.java</file>
+            <file>file:/C:/Users/NATWORPONGLOYSWAI/Documents/NetBeansProjects/MaeJaPokeroBattle/src/org/maejaporja/model/sorter/InsertionSort.java</file>
+            <file>file:/C:/Users/NATWORPONGLOYSWAI/Documents/NetBeansProjects/MaeJaPokeroBattle/src/org/maejaporja/model/PokeroTrainer.java</file>
         </group>
     </open-files>
 </project-private>
