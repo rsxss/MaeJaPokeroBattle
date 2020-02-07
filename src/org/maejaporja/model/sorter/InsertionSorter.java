@@ -18,17 +18,8 @@ public class InsertionSorter<T> implements Sorter<T>{
         this("ASC");
     }
     public InsertionSorter(String order){
-        switch(order){
-            case "ASC": break;
-            case "DESC": break;
-            default:
-                throw new IllegalArgumentException(
-                        String.format(
-                                "Must be ordered by ASC or DESC. got %s", order
-                        )
-                );
-        }
-        this.order = order;
+        if(verifyOrder(order))
+            this.order = order;
     }
     
     @Override
@@ -58,9 +49,19 @@ public class InsertionSorter<T> implements Sorter<T>{
     }
     @Override
     public Comparable<T>[] newArrayFrom(Comparable<T>[] arr){
-        Comparable<T>[] newArr = arr.clone();
-        System.arraycopy(arr, 0, newArr, 0, 0);
-        return newArr;
+        return arr.clone();
     }
-    
+    @Override
+    public boolean verifyOrder(String order) throws IllegalArgumentException {
+        switch(order){
+            case "ASC": break;
+            case "DESC": break;
+            default:
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Must be ordered by ASC or DESC. got %s", order
+                        )
+                );
+        } return true;
+    }
 }
