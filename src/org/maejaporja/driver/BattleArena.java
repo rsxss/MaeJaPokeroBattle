@@ -12,8 +12,6 @@ import org.maejaporja.model.PokeroTrainer;
 import org.maejaporja.model.storage.ApplicationStorage;
 import org.maejaporja.utils.ApplicationConfig.MatchConfig;
 
-import org.maejaporja.model.sorter.InsertionSort;
-
 
 /**
  *
@@ -28,7 +26,6 @@ public class BattleArena {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
         prepareBattleArena();
         /////////////////////////////////////////////////////////////////////////
         PokeroTrainer[] pokeroTrainers = BattleArena.STORAGE.getPokeroTrainers();
