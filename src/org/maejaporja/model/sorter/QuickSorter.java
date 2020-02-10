@@ -30,19 +30,56 @@ import java.util.logging.Logger;
 public class QuickSorter<T> implements Sorter<T>{
     private String order;
     private PivotEnum pivotPosition;
-    private boolean startLeft;
-    private boolean startRight;
+//    private boolean startLeft;
+//    private boolean startRight;
     
     public enum PivotEnum {
         BEGIN {
             @Override
             <T> int partition(Comparable<T>[] arr, int low, int high, QuickSorter qs){
-                return 0;
+               
+                Comparable<T> pivot = arr[low];
+                arr[low] = arr[high];
+                arr[high] = pivot;
+                
+                for(int i=low; i<high; i++){
+                    if(qs.compareInOrder(arr[i], pivot)){
+                        Comparable<T> temp = arr[low];
+                        arr[low] = arr[i];
+                        arr[i] = temp;
+                        low++;
+                    }
+                }
+                
+                Comparable<T> temp = arr[low];
+                arr[low] = pivot;
+                arr[high] = temp;
+                
+                return low;
             }
         }, MIDDLE {
             @Override
             <T> int partition(Comparable<T>[] arr, int low, int high, QuickSorter qs) {
-               return 0;
+                
+                int middle = low + (high - low)/2;
+                Comparable<T> pivot = arr[middle];
+                arr[middle] = arr[high];
+                arr[high] = pivot;
+                
+                for(int i=low; i<high; i++){
+                    if(qs.compareInOrder(arr[i], pivot)){
+                        Comparable<T> temp = arr[low];
+                        arr[low] = arr[i];
+                        arr[i] = temp;
+                        low++;
+                    }
+                }
+                
+                Comparable<T> temp = arr[low];
+                arr[low] = arr[high];
+                arr[high] = temp;
+
+                return low;
             }
         }, END {
             @Override
@@ -115,14 +152,20 @@ public class QuickSorter<T> implements Sorter<T>{
         return arr.clone();
     }
     
+    private <T> boolean verifyPartition(Comparable<T>[] arr, int low, int high){
+        return !Objects.isNull(arr) && low < high;
+    }
+    
     private T[] quickSort(Comparable<T>[] arr, int low, int high){
-        int partition = pivotPosition.partition(arr, low, high, this);
-        
-        if(partition-1 > low){
-            quickSort(arr, 0, partition-1);
-        }
-        if(partition+1 < high){
-            quickSort(arr, partition+1, high);
+        if(verifyPartition(arr, low, high)){
+            int partition = pivotPosition.partition(arr, low, high, this);
+            
+            if(partition-1 > low){
+                quickSort(arr, low, partition-1);
+            }
+            if(partition+1 < high){
+                quickSort(arr, partition+1, high);
+            }
         }
         
 // StackOverFlow will be occured on big number of input (Trying to figure out what is happening under the hood)
@@ -131,7 +174,7 @@ public class QuickSorter<T> implements Sorter<T>{
 //                try {
 //                    this.startLeft = true;
 //                    System.out.println("LEFT "+Thread.currentThread().getName());
-//                    CompletableFuture.runAsync(() -> quickSort(arr, 0, partition-1)).get();
+//                    CompletableFuture.runAsync(() -> quickSort(arr, low, partition-1)).get();
 //                } catch (InterruptedException ex) {
 //                    Logger.getLogger(QuickSorter.class.getName()).log(Level.SEVERE, null, ex);
 //                } catch (ExecutionException ex) {
