@@ -69,6 +69,9 @@ public class SorterDriver {
         });CompletableFuture<Void> bubbleSortFuture = CompletableFuture.runAsync(() -> {
             sortBy(INT_ARRAY, "bubble", "ASC");
             System.out.println("===========================");
+        });CompletableFuture<Void> quickSortFuture = CompletableFuture.runAsync(() -> {
+            sortBy(INT_ARRAY, "quick", "ASC");
+            System.out.println("===========================");
         });
 
         
@@ -76,7 +79,8 @@ public class SorterDriver {
             CompletableFuture.allOf(
                     insertionSortFuture,
                     selectionSortFuture,
-                    bubbleSortFuture
+                    bubbleSortFuture,
+                    quickSortFuture
             ).get();
         } catch(ExecutionException | InterruptedException err){
             for(StackTraceElement ste: err.getStackTrace()){
