@@ -5,6 +5,12 @@
  */
 package org.maejaporja.model.sorter;
 
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author NATWORPONGLOYSWAI
@@ -24,26 +30,27 @@ package org.maejaporja.model.sorter;
 public class QuickSorter<T> implements Sorter<T>{
     private String order;
     private PivotEnum pivotPosition;
+    private boolean startLeft;
+    private boolean startRight;
     
-    enum PivotEnum {
+    public enum PivotEnum {
         BEGIN {
             @Override
-            <T> int partition(Comparable<T>[] arr, int low, int high){
+            <T> int partition(Comparable<T>[] arr, int low, int high, QuickSorter qs){
                 return 0;
             }
         }, MIDDLE {
             @Override
-            <T> int partition(Comparable<T>[] arr, int low, int high) {
+            <T> int partition(Comparable<T>[] arr, int low, int high, QuickSorter qs) {
                return 0;
             }
-
         }, END {
             @Override
-            <T> int partition(Comparable<T>[] arr, int low, int high) {
+            <T> int partition(Comparable<T>[] arr, int low, int high, QuickSorter qs) {
                 Comparable<T> pivot = arr[high];
                 
                 for(int i=low; i<high; i++){
-                    if(compareInOrder(arr[i], pivot)){
+                    if(qs.compareInOrder(arr[i], pivot)){
                         Comparable<T> temp = arr[low];
                         arr[low] = arr[i];
                         arr[i] = temp;
@@ -60,8 +67,8 @@ public class QuickSorter<T> implements Sorter<T>{
 
         };
 
-        abstract <T> int partition(Comparable<T>[] arr, int low, int high);
-    
+        abstract <T> int partition(Comparable<T>[] arr, int low, int high, QuickSorter qs);
+        
     }
     
     public QuickSorter(){
@@ -109,13 +116,45 @@ public class QuickSorter<T> implements Sorter<T>{
     }
     
     private T[] quickSort(Comparable<T>[] arr, int low, int high){
-        int partition = pivotPosition.partition(arr, low, high);
+        int partition = pivotPosition.partition(arr, low, high, this);
+        
         if(partition-1 > low){
             quickSort(arr, 0, partition-1);
         }
         if(partition+1 < high){
             quickSort(arr, partition+1, high);
         }
+        
+// StackOverFlow will be occured on big number of input (Trying to figure out what is happening under the hood)
+//        if(partition-1 > low){
+//            if(!startLeft){
+//                try {
+//                    this.startLeft = true;
+//                    System.out.println("LEFT "+Thread.currentThread().getName());
+//                    CompletableFuture.runAsync(() -> quickSort(arr, 0, partition-1)).get();
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(QuickSorter.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (ExecutionException ex) {
+//                    Logger.getLogger(QuickSorter.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            } else
+//                quickSort(arr, 0, partition-1);
+//        }
+//        if(partition+1 < high){
+//            if(!startRight){
+//                try {
+//                    this.startRight = true;
+//                    System.out.println("RIGHT "+Thread.currentThread().getName());
+//                    CompletableFuture.runAsync(() -> quickSort(arr, partition+1, high)).get();
+//                } catch (InterruptedException ex) {
+//                    Logger.getLogger(QuickSorter.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (ExecutionException ex) {
+//                    Logger.getLogger(QuickSorter.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            } else 
+//                quickSort(arr, partition+1, high);
+//        }
+        
         return (T[])arr;
     }
 

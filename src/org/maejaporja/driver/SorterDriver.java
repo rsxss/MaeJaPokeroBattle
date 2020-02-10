@@ -8,9 +8,9 @@ package org.maejaporja.driver;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.BiFunction;
 import org.maejaporja.model.sorter.BubbleSorter;
 import org.maejaporja.model.sorter.InsertionSorter;
+import org.maejaporja.model.sorter.QuickSorter;
 import org.maejaporja.model.sorter.SelectionSorter;
 
 /**
@@ -18,10 +18,10 @@ import org.maejaporja.model.sorter.SelectionSorter;
  * @author NATWORPONGLOYSWAI
  */
 public class SorterDriver {
-    private static final Comparable<Integer>[] INT_ARRAY = getRandInt(50000, 90);
+    private static final Comparable<Integer>[] INT_ARRAY = getRandInt(500000, 90);
     
     public static void main(String[] args){
-        System.out.println("Unsorted Array");
+        System.out.printf("Unsorted array of length %d units%n", INT_ARRAY.length);
         System.out.println(Arrays.toString(INT_ARRAY));
         System.out.println("===========================");
         
@@ -44,6 +44,10 @@ public class SorterDriver {
                 System.out.println(Arrays.toString(
                         (new BubbleSorter(order)).sort((Comparable[]) o)
                 )); break;
+            case "quick":
+                System.out.println(Arrays.toString(
+                        (new QuickSorter(order, QuickSorter.PivotEnum.END)).sort((Comparable[]) o)
+                )); break;
             default:
                 throw new IllegalArgumentException(
                         String.format("Algorithm %s not supported!", algorithm)
@@ -52,35 +56,37 @@ public class SorterDriver {
         double endTime = System.currentTimeMillis()/1000.0;
         double totalTime = endTime - startTime;
         System.out.println(
-                String.format("Time used for %s sort: %.2f",
+                String.format("Time used for %s sort: %.2f seconds",
                             algorithm, totalTime
                         )
         );
     }
     
     private static void runAsyncSorter(){
+        CompletableFuture<Void> quickSortFuture = CompletableFuture.runAsync(() -> {
+            sortBy(INT_ARRAY, "quick", "ASC");
+            System.out.println("===========================");
+        });
         CompletableFuture<Void> insertionSortFuture = CompletableFuture.runAsync(() -> {
-            sortBy(INT_ARRAY, "insertion", "DESC");
+            sortBy(INT_ARRAY, "insertion", "ASC");
             System.out.println("===========================");
         });
         CompletableFuture<Void> selectionSortFuture = CompletableFuture.runAsync(() -> {
             sortBy(INT_ARRAY, "selection", "ASC");
             System.out.println("===========================");
-        });CompletableFuture<Void> bubbleSortFuture = CompletableFuture.runAsync(() -> {
+        });
+        CompletableFuture<Void> bubbleSortFuture = CompletableFuture.runAsync(() -> {
             sortBy(INT_ARRAY, "bubble", "ASC");
-            System.out.println("===========================");
-        });CompletableFuture<Void> quickSortFuture = CompletableFuture.runAsync(() -> {
-            sortBy(INT_ARRAY, "quick", "ASC");
             System.out.println("===========================");
         });
 
         
         try{
             CompletableFuture.allOf(
+                    quickSortFuture,
                     insertionSortFuture,
                     selectionSortFuture,
-                    bubbleSortFuture,
-                    quickSortFuture
+                    bubbleSortFuture
             ).get();
         } catch(ExecutionException | InterruptedException err){
             for(StackTraceElement ste: err.getStackTrace()){
