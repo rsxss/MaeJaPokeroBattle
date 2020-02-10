@@ -7,8 +7,10 @@ package org.maejaporja.driver;
 
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import org.maejaporja.model.sorter.BubbleSorter;
 import org.maejaporja.model.sorter.InsertionSorter;
+import org.maejaporja.model.sorter.QuickSorter;
 import org.maejaporja.model.sorter.SelectionSorter;
 
 /**
@@ -16,10 +18,10 @@ import org.maejaporja.model.sorter.SelectionSorter;
  * @author NATWORPONGLOYSWAI
  */
 public class SorterDriver {
-    private static final Comparable<Integer>[] INT_ARRAY = getRandInt(50000, 90);
+    private static final Comparable<Integer>[] INT_ARRAY = getRandInt(5_000_000, 9000);
     
     public static void main(String[] args){
-        System.out.println("Unsorted Array");
+        System.out.printf("Unsorted array of length %d members%n", INT_ARRAY.length);
         System.out.println(Arrays.toString(INT_ARRAY));
         System.out.println("===========================");
         
@@ -27,20 +29,24 @@ public class SorterDriver {
        
     }
     
-    private static void sortBy(Object o, String algorithm, String order){
+    private static void sortBy(Comparable[] arr, String algorithm, String order){
         double startTime = System.currentTimeMillis()/1000.0;
         switch(algorithm){
             case "insertion":
                 System.out.println(Arrays.toString(
-                        (new InsertionSorter(order)).sort((Comparable[]) o)
+                        (new InsertionSorter(order)).sort(arr)
                 )); break;
             case "selection":
                 System.out.println(Arrays.toString(
-                        (new SelectionSorter(order)).sort((Comparable[]) o)
+                        (new SelectionSorter(order)).sort(arr)
                 )); break;
             case "bubble":
                 System.out.println(Arrays.toString(
-                        (new BubbleSorter(order)).sort((Comparable[]) o)
+                        (new BubbleSorter(order)).sort(arr)
+                )); break;
+            case "quick":
+                System.out.println(Arrays.toString(
+                        (new QuickSorter(order)).sort(arr)
                 )); break;
             default:
                 throw new IllegalArgumentException(
@@ -50,49 +56,46 @@ public class SorterDriver {
         double endTime = System.currentTimeMillis()/1000.0;
         double totalTime = endTime - startTime;
         System.out.println(
-                String.format("Time used for %s sort: %.2f",
+                String.format("Time used for %s sort: %.2f seconds%n===========================",
                             algorithm, totalTime
                         )
         );
     }
     
     private static void runAsyncSorter(){
-        
-        CompletableFuture<Void> insertionSortFuture = CompletableFuture.runAsync(new Runnable(){
-            @Override
-            public void run(){
-                sortBy(INT_ARRAY, "insertion", "DESC");
-                System.out.println("===========================");
-            }
+        CompletableFuture<Void> quickSortFuture = CompletableFuture.runAsync(() -> {
+            sortBy(INT_ARRAY, "quick", "ASC");
         });
-        CompletableFuture<Void> selectionSortFuture = CompletableFuture.runAsync(new Runnable(){
-            @Override
-            public void run(){
-                sortBy(INT_ARRAY, "selection", "ASC");
-                System.out.println("===========================");
-            }
-        });CompletableFuture<Void> bubbleSortFuture = CompletableFuture.runAsync(new Runnable(){
-            @Override
-            public void run(){
-                sortBy(INT_ARRAY, "bubble", "ASC");
-                System.out.println("===========================");
-            }
+        CompletableFuture<Void> insertionSortFuture = CompletableFuture.runAsync(() -> {
+            sortBy(INT_ARRAY, "insertion", "ASC");
         });
+        CompletableFuture<Void> selectionSortFuture = CompletableFuture.runAsync(() -> {
+            sortBy(INT_ARRAY, "selection", "ASC");
+        });
+        CompletableFuture<Void> bubbleSortFuture = CompletableFuture.runAsync(() -> {
+            sortBy(INT_ARRAY, "bubble", "ASC");
+        });
+
         
         try{
-            insertionSortFuture.get();
-            selectionSortFuture.get();
-            bubbleSortFuture.get();
-        } catch(Exception err){
-            err.printStackTrace();
+            CompletableFuture.allOf(
+                    quickSortFuture,
+                    insertionSortFuture,
+                    selectionSortFuture,
+                    bubbleSortFuture
+            ).get();
+        } catch(ExecutionException | InterruptedException err){
+            for(StackTraceElement ste: err.getStackTrace()){
+                System.out.println(ste);
+            }
         }
     }
     
     private static Comparable<Integer>[] getRandInt(int size, int max){
-        Integer[] intArr = new Integer[size];
+        Comparable<Integer>[] intArr = new Integer[size];
         for(int i=0; i<size; i++){
             intArr[i] = (int)(Math.random()*max)+1;
-        } return (Comparable<Integer>[])intArr;
+        } return intArr;
     }
     
 }
