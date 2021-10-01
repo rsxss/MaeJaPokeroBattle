@@ -13,7 +13,6 @@ import org.maejaporja.model.storage.ApplicationStorage;
 import org.maejaporja.utils.ApplicationConfig.MatchConfig;
 
 
-
 /**
  *
  * @author NATWORPONGLOYSWAI
